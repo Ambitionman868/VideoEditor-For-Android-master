@@ -2,7 +2,6 @@ package com.example.cj.videoeditor.drawer;
 
 import android.content.res.Resources;
 import android.graphics.SurfaceTexture;
-import android.opengl.EGL14;
 import android.opengl.GLES11Ext;
 import android.opengl.GLES20;
 import android.opengl.GLSurfaceView;
@@ -12,7 +11,6 @@ import com.example.cj.videoeditor.filter.AFilter;
 import com.example.cj.videoeditor.filter.OesFilter;
 import com.example.cj.videoeditor.gpufilter.SlideGpuFilterGroup;
 import com.example.cj.videoeditor.record.video.TextureMovieEncoder;
-import com.example.cj.videoeditor.utils.EasyGlUtils;
 import com.example.cj.videoeditor.utils.MatrixUtils;
 
 import javax.microedition.khronos.egl.EGLConfig;
@@ -38,6 +36,8 @@ public class TestCameraDrawer implements GLSurfaceView.Renderer {
     private int width = 0, height = 0;
     private AFilter mOesFilter;
     private int mCameraId = 1;
+    private int mTextureID;
+
 
 
     private TextureMovieEncoder videoEncoder;
@@ -50,7 +50,6 @@ public class TestCameraDrawer implements GLSurfaceView.Renderer {
     private static final int RECORDING_RESUME = 4;
     private static final int RECORDING_PAUSED = 5;
     private String savePath;
-    private int textureID;
     private int[] fFrame = new int[2];
     private int[] fTexture = new int[2];
 
@@ -87,10 +86,10 @@ public class TestCameraDrawer implements GLSurfaceView.Renderer {
 
     @Override
     public void onSurfaceCreated(GL10 gl10, EGLConfig eglConfig) {
-        textureID = createTextureID();
-        mSurfaceTextrue = new SurfaceTexture(textureID);
+        mTextureID = createTextureID();
+        mSurfaceTextrue = new SurfaceTexture(mTextureID);
         mOesFilter.create();
-        mOesFilter.setTextureId(textureID);
+        mOesFilter.setTextureId(mTextureID);
 
 
         if (recordingEnabled) {
