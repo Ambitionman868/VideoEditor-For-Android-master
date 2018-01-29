@@ -44,12 +44,6 @@ public class TestCameraDrawer implements GLSurfaceView.Renderer {
     private final AFilter drawFilter;
 
     private final AFilter clipFilter;
-    /**绘制水印的filter组*/
-    /**
-     * 用于绘制美白效果的filter
-     */
-    private AFilter mProcessFilter;
-    /**美白的filter*/
     /**
      * 多种滤镜切换
      */
@@ -88,7 +82,6 @@ public class TestCameraDrawer implements GLSurfaceView.Renderer {
         clipFilter = new NoFilter(resources);
         drawFilter = new CameraFilter(resources);
 
-        mProcessFilter = new ProcessFilter(resources);
         mSlideFilterGroup = new SlideGpuFilterGroup();
 
 
@@ -112,7 +105,6 @@ public class TestCameraDrawer implements GLSurfaceView.Renderer {
         drawFilter.create();
         drawFilter.setTextureId(textureID);
 
-        mProcessFilter.create();
         showFilter.create();
         clipFilter.create();
         //clipFilter.verticalFlipVertex();
@@ -151,7 +143,6 @@ public class TestCameraDrawer implements GLSurfaceView.Renderer {
             GLES20.glBindTexture(GLES20.GL_TEXTURE_2D, 0);
         }
 
-        mProcessFilter.setSize(mPreviewWidth, mPreviewHeight);
         drawFilter.setSize(mPreviewWidth, mPreviewHeight);
         mSlideFilterGroup.onSizeChanged(mPreviewWidth, mPreviewHeight);
 
@@ -172,10 +163,8 @@ public class TestCameraDrawer implements GLSurfaceView.Renderer {
 
         //mBeFilter.setTextureId(fTexture[0]);
         //mBeFilter.draw();
-        mProcessFilter.setTextureId(fTexture[0]);
-        mProcessFilter.draw();
 
-        mSlideFilterGroup.onDrawFrame(mProcessFilter.getOutputTexture());
+        mSlideFilterGroup.onDrawFrame(fTexture[0]);
 
         //mAfFilter.setTextureId(mSlideFilterGroup.getOutputTexture());
         //mAfFilter.draw();
