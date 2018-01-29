@@ -161,13 +161,7 @@ public class TestCameraDrawer implements GLSurfaceView.Renderer {
         drawFilter.draw();
         EasyGlUtils.unBindFrameBuffer();
 
-        //mBeFilter.setTextureId(fTexture[0]);
-        //mBeFilter.draw();
-
         mSlideFilterGroup.onDrawFrame(fTexture[0]);
-
-        //mAfFilter.setTextureId(mSlideFilterGroup.getOutputTexture());
-        //mAfFilter.draw();
 
         EasyGlUtils.bindFrameTexture(fFrame[1], fTexture[1]);
         clipFilter.setTextureId(mSlideFilterGroup.getOutputTexture());
