@@ -41,8 +41,6 @@ public class TestCameraDrawer implements GLSurfaceView.Renderer {
 
     private final AFilter clipFilter;
     /**绘制水印的filter组*/
-    private final GroupFilter mBeFilter;
-    private final GroupFilter mAfFilter;
     /**用于绘制美白效果的filter*/
     private AFilter mProcessFilter;
     /**美白的filter*/
@@ -81,8 +79,6 @@ public class TestCameraDrawer implements GLSurfaceView.Renderer {
         drawFilter = new CameraFilter(resources);
 
         mProcessFilter=new ProcessFilter(resources);
-        mBeFilter = new GroupFilter(resources);
-        mAfFilter = new GroupFilter(resources);
         mBeautyFilter = new MagicBeautyFilter();
 //        mBeautyFilter = new MagicAntiqueFilter();
         mSlideFilterGroup = new SlideGpuFilterGroup();
@@ -98,7 +94,6 @@ public class TestCameraDrawer implements GLSurfaceView.Renderer {
     private void addFilter(AFilter filter) {
         /**抵消本身的颠倒操作*/
 //        filter.setMatrix(OM);
-        mBeFilter.addFilter(filter);
     }
 
     @Override
@@ -114,8 +109,6 @@ public class TestCameraDrawer implements GLSurfaceView.Renderer {
         clipFilter.create();
         //clipFilter.verticalFlipVertex();
 //        showFilter.setTextureId(textureID);
-        mBeFilter.create();
-        mAfFilter.create();
         mBeautyFilter.init();
         mSlideFilterGroup.init();
 
@@ -152,8 +145,6 @@ public class TestCameraDrawer implements GLSurfaceView.Renderer {
         }
 
         mProcessFilter.setSize(mPreviewWidth,mPreviewHeight);
-        mBeFilter.setSize(mPreviewWidth,mPreviewHeight);
-        mAfFilter.setSize(mPreviewWidth,mPreviewHeight);
         drawFilter.setSize(mPreviewWidth,mPreviewHeight);
         mBeautyFilter.onDisplaySizeChanged(mPreviewWidth,mPreviewHeight);
         mBeautyFilter.onInputSizeChanged(mPreviewWidth,mPreviewHeight);
@@ -174,26 +165,26 @@ public class TestCameraDrawer implements GLSurfaceView.Renderer {
         drawFilter.draw();
         EasyGlUtils.unBindFrameBuffer();
 
-        mBeFilter.setTextureId(fTexture[0]);
-        mBeFilter.draw();
+        //mBeFilter.setTextureId(fTexture[0]);
+        //mBeFilter.draw();
         if (mBeautyFilter != null && mBeautyFilter.getBeautyLevel() != 0){
             EasyGlUtils.bindFrameTexture(fFrame[0],fTexture[0]);
             GLES20.glViewport(0,0,mPreviewWidth,mPreviewHeight);
-            mBeautyFilter.onDrawFrame(mBeFilter.getOutputTexture());
+            mBeautyFilter.onDrawFrame(fTexture[0]);
             EasyGlUtils.unBindFrameBuffer();
             mProcessFilter.setTextureId(fTexture[0]);
         }else {
-            mProcessFilter.setTextureId(mBeFilter.getOutputTexture());
+            mProcessFilter.setTextureId(fTexture[0]);
         }
         mProcessFilter.draw();
 
         mSlideFilterGroup.onDrawFrame(mProcessFilter.getOutputTexture());
 
-        mAfFilter.setTextureId(mSlideFilterGroup.getOutputTexture());
-        mAfFilter.draw();
+        //mAfFilter.setTextureId(mSlideFilterGroup.getOutputTexture());
+        //mAfFilter.draw();
 
         EasyGlUtils.bindFrameTexture(fFrame[1],fTexture[1]);
-        clipFilter.setTextureId(mAfFilter.getOutputTexture());
+        clipFilter.setTextureId(mSlideFilterGroup.getOutputTexture());
         clipFilter.draw();
         EasyGlUtils.unBindFrameBuffer();
 
