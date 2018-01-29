@@ -92,10 +92,6 @@ public class TestCameraDrawer implements GLSurfaceView.Renderer {
         recordingEnabled = false;
     }
 
-    private void addFilter(AFilter filter) {
-        /**抵消本身的颠倒操作*/
-//        filter.setMatrix(OM);
-    }
 
     @Override
     public void onSurfaceCreated(GL10 gl10, EGLConfig eglConfig) {
