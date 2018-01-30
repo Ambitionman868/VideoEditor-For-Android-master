@@ -11,7 +11,6 @@ import java.io.InputStream;
 import java.nio.ByteBuffer;
 import java.nio.ByteOrder;
 import java.nio.FloatBuffer;
-import java.nio.ShortBuffer;
 import java.util.Arrays;
 
 /**
@@ -92,20 +91,6 @@ public abstract class AFilter {
             0.0f, 0.0f,
             1.0f, 1.0f,
             1.0f, 0.0f
-    };
-
-    private float[] verticalFlipRatioCoord = {
-            0.0f, 0.75f,
-            0.0f, 0.25f,
-            1.0f, 0.75f,
-            1.0f, 0.25f
-    };
-
-    private float posRatio[] = {
-            -1.0f, 0.5f,
-            -1.0f, -0.5f,
-            1.0f, 0.5f,
-            1.0f, -0.5f,
     };
 
     private SparseArray<boolean[]> mBools;
@@ -369,14 +354,59 @@ public abstract class AFilter {
         mTexBuffer.position(0);
     }
 
-    public void verticalFlipVertexRatio() {
+    public void changeRatio(int width, int height) {
+
+        float posH = 1.0f;
+        float coordH0 = 0.0f;
+        float coordH1 = 1.0f;
+
+        //float ratioWH = width * 1.0f / height;
+
+        float ratioWH = height * 1.0f / width * 1.0f;
+        posH = ratioWH / 2.0f;
+
+        coordH0 = 0.5f - posH / 2.0f;
+        coordH1 = 0.5f + posH / 2.0f;
+
+
+
+        /*float posRatio1_1[] = {
+                -1.0f, 0.5f,
+                -1.0f, -0.5f,
+                1.0f, 0.5f,
+                1.0f, -0.5f,
+        };*/
+
+        float posRatio1_1[] = {
+                -1.0f, posH,
+                -1.0f, -posH,
+                1.0f, posH,
+                1.0f, -posH,
+        };
+
+
+       /* float[] coord1_1 = {
+                0.0f, 0.25f,
+                0.0f, 0.75f,
+                1.0f, 0.25f,
+                1.0f, 0.75f,
+        };
+*/
+        float[] coord1_1 = {
+                0.0f, coordH0,
+                0.0f, coordH1,
+                1.0f, coordH0,
+                1.0f, coordH1,
+        };
+
+
         if (mTexBuffer != null) {
             mTexBuffer.clear();
         }
         ByteBuffer a = ByteBuffer.allocateDirect(32);
         a.order(ByteOrder.nativeOrder());
         mVerBuffer = a.asFloatBuffer();
-        mVerBuffer.put(posRatio);
+        mVerBuffer.put(posRatio1_1);
         mVerBuffer.position(0);
 
         if (mTexBuffer != null) {
@@ -385,7 +415,7 @@ public abstract class AFilter {
         ByteBuffer b = ByteBuffer.allocateDirect(32);
         b.order(ByteOrder.nativeOrder());
         mTexBuffer = b.asFloatBuffer();
-        mTexBuffer.put(verticalFlipRatioCoord);
+        mTexBuffer.put(coord1_1);
         mTexBuffer.position(0);
     }
 }
