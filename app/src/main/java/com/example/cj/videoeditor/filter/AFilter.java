@@ -362,11 +362,15 @@ public abstract class AFilter {
 
         //float ratioWH = width * 1.0f / height;
 
-        float ratioWH = height * 1.0f / width * 1.0f;
-        posH = ratioWH / 2.0f;
+        if (width > 0 && height > 0) {
 
-        coordH0 = 0.5f - posH / 2.0f;
-        coordH1 = 0.5f + posH / 2.0f;
+            float ratioWH = height * 1.0f / width * 1.0f;
+            posH = ratioWH / 2.0f;
+
+            coordH0 = 0.5f - posH / 2.0f;
+            coordH1 = 0.5f + posH / 2.0f;
+        }
+
 
 
 

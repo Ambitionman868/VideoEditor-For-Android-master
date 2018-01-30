@@ -358,6 +358,6 @@ public class CameraDrawer implements GLSurfaceView.Renderer {
     }
 
     public void changeRatio() {
-        clipFilter.verticalFlipVertexRatio();
+        //clipFilter.changeRatio();
     }
 }

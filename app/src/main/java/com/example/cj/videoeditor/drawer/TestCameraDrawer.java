@@ -1,7 +1,6 @@
 package com.example.cj.videoeditor.drawer;
 
 import android.content.res.Resources;
-import android.graphics.BitmapFactory;
 import android.graphics.SurfaceTexture;
 import android.opengl.EGL14;
 import android.opengl.GLES11Ext;
@@ -9,15 +8,10 @@ import android.opengl.GLES20;
 import android.opengl.GLSurfaceView;
 import android.view.MotionEvent;
 
-import com.example.cj.videoeditor.R;
 import com.example.cj.videoeditor.filter.AFilter;
 import com.example.cj.videoeditor.filter.CameraFilter;
-import com.example.cj.videoeditor.filter.GroupFilter;
 import com.example.cj.videoeditor.filter.NoFilter;
-import com.example.cj.videoeditor.filter.ProcessFilter;
-import com.example.cj.videoeditor.filter.WaterMarkFilter;
 import com.example.cj.videoeditor.gpufilter.SlideGpuFilterGroup;
-import com.example.cj.videoeditor.gpufilter.filter.MagicBeautyFilter;
 import com.example.cj.videoeditor.record.video.TextureMovieEncoder;
 import com.example.cj.videoeditor.utils.EasyGlUtils;
 import com.example.cj.videoeditor.utils.MatrixUtils;
@@ -144,7 +138,7 @@ public class TestCameraDrawer implements GLSurfaceView.Renderer {
 
         MatrixUtils.getShowMatrix(SM, mPreviewWidth, mPreviewHeight, width, height);
         showFilter.setMatrix(SM);
-        clipFilter.setMatrix(SM);
+        //clipFilter.setMatrix(SM);
     }
 
     @Override
@@ -336,7 +330,26 @@ public class TestCameraDrawer implements GLSurfaceView.Renderer {
         GLES20.glTexParameterf(GLES20.GL_TEXTURE_2D, GLES20.GL_TEXTURE_WRAP_T, GLES20.GL_CLAMP_TO_EDGE);
     }
 
-    public void changeRatio() {
-        clipFilter.verticalFlipVertexRatio();
+    public void changeRatio(int model) {
+        switch (model) {
+            case -1:
+                clipFilter.changeRatio(0, 0);
+                break;
+            case 0:
+                clipFilter.changeRatio(9, 16);
+                break;
+            case 1:
+                clipFilter.changeRatio(3, 4);
+                break;
+            case 2:
+                clipFilter.changeRatio(1, 1);
+                break;
+            case 3:
+                clipFilter.changeRatio(4, 3);
+                break;
+            case 4:
+                clipFilter.changeRatio(16, 9);
+                break;
+        }
     }
 }

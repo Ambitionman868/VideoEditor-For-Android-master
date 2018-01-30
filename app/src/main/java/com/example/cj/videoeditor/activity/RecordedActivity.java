@@ -39,7 +39,7 @@ public class RecordedActivity extends BaseActivity implements View.OnClickListen
     private ImageView mBeautyBtn;
     private ImageView mFilterBtn;
     private ImageView mCameraChange;
-    private static final int maxTime = 20000;//最长录制20s
+    private static final int maxTime = 10000;//最长录制20s
     private boolean pausing = false;
     private boolean recordFlag = false;//是否正在录制
 
@@ -77,10 +77,40 @@ public class RecordedActivity extends BaseActivity implements View.OnClickListen
         mCapture.setTotal(maxTime);
         mCapture.setOnClickListener(this);
 
-        findViewById(R.id.btn_change_ratio).setOnClickListener(new View.OnClickListener() {
+        findViewById(R.id.btn_change_ratio_full).setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                mCameraView.changeRatio();
+                mCameraView.changeRatio(-1);
+            }
+        });
+        findViewById(R.id.btn_change_ratio9_16).setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                mCameraView.changeRatio(0);
+            }
+        });
+        findViewById(R.id.btn_change_ratio3_4).setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                mCameraView.changeRatio(1);
+            }
+        });
+        findViewById(R.id.btn_change_ratio1_1).setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                mCameraView.changeRatio(2);
+            }
+        });
+        findViewById(R.id.btn_change_ratio4_3).setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                mCameraView.changeRatio(3);
+            }
+        });
+        findViewById(R.id.btn_change_ratio16_9).setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                mCameraView.changeRatio(4);
             }
         });
     }
