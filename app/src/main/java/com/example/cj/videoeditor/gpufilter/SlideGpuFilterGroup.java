@@ -264,7 +264,7 @@ public class SlideGpuFilterGroup {
                 }
                 locked = true;
                 downX = -1;
-                if (offset > MyApplication.screenWidth / 3) {
+                if (offset > MyApplication.screenWidth / 20) {
                     scroller.startScroll(offset, 0, MyApplication.screenWidth - offset, 0, 100 * (1 - offset / MyApplication.screenWidth));
                     needSwitch = true;
                 } else {
