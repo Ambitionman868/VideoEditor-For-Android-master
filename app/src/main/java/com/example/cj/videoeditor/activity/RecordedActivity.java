@@ -36,7 +36,6 @@ public class RecordedActivity extends BaseActivity implements View.OnClickListen
     private CameraView mCameraView;
     private CircularProgressView mCapture;
     private FocusImageView mFocus;
-    private ImageView mBeautyBtn;
     private ImageView mFilterBtn;
     private ImageView mCameraChange;
     private static final int maxTime = 10000;//最长录制20s
@@ -65,12 +64,10 @@ public class RecordedActivity extends BaseActivity implements View.OnClickListen
         mCameraView = (CameraView) findViewById(R.id.camera_view);
         mCapture = (CircularProgressView) findViewById(R.id.mCapture);
         mFocus = (FocusImageView) findViewById(R.id.focusImageView);
-        mBeautyBtn = (ImageView) findViewById(R.id.btn_camera_beauty);
         mFilterBtn = (ImageView) findViewById(R.id.btn_camera_filter);
         mCameraChange = (ImageView) findViewById(R.id.btn_camera_switch);
 
 
-        mBeautyBtn.setOnClickListener(this);
         mCameraView.setOnTouchListener(this);
         mCameraView.setOnFilterChangeListener(this);
         mCameraChange.setOnClickListener(this);
@@ -233,7 +230,7 @@ public class RecordedActivity extends BaseActivity implements View.OnClickListen
                 break;
             case R.id.btn_camera_beauty:
 
-                if (mCameraView.getCameraId() == 0){
+              /*  if (mCameraView.getCameraId() == 0){
                     Toast.makeText(this, "后置摄像头 不使用美白磨皮功能", Toast.LENGTH_SHORT).show();
                     return;
                 }
@@ -246,7 +243,7 @@ public class RecordedActivity extends BaseActivity implements View.OnClickListen
                                     }
                                 })
                         .setNegativeButton("取消", null)
-                        .show();
+                        .show();*/
                 break;
         }
     }

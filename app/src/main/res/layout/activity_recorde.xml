@@ -108,7 +108,8 @@
                 android:layout_height="match_parent"
                 android:layout_weight="1.0"
                 android:scaleType="center"
-                android:src="@drawable/btn_camera_beauty" />
+                android:src="@drawable/btn_camera_beauty"
+                android:visibility="invisible"/>
 
             <com.example.cj.videoeditor.widget.CircularProgressView
                 android:id="@+id/mCapture"
