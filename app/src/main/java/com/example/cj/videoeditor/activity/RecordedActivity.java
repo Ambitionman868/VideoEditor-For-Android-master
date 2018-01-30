@@ -185,6 +185,13 @@ public class RecordedActivity extends BaseActivity implements View.OnClickListen
         }
         mCameraView.onPause();
     }
+
+    @Override
+    protected void onDestroy() {
+        super.onDestroy();
+        mCameraView.onDestroy();
+    }
+
     @Override
     public void onFilterChange(final MagicFilterType type) {
         runOnUiThread(new Runnable() {
