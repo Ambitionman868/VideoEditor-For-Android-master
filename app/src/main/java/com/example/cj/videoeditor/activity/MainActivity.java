@@ -15,13 +15,8 @@ public class MainActivity extends BaseActivity implements View.OnClickListener {
         setContentView(R.layout.activity_main);
 
         Button recordBtn = (Button) findViewById(R.id.record_activity);
-        Button selectBtn = (Button) findViewById(R.id.select_activity);
-        Button audioBtn = (Button) findViewById(R.id.audio_activity);
 
         recordBtn.setOnClickListener(this);
-        selectBtn.setOnClickListener(this);
-        audioBtn.setOnClickListener(this);
-
     }
 
     @Override
@@ -29,12 +24,6 @@ public class MainActivity extends BaseActivity implements View.OnClickListener {
         switch (v.getId()){
             case R.id.record_activity:
                 startActivity(new Intent(MainActivity.this , RecordedActivity.class));
-                break;
-            case R.id.select_activity:
-                startActivity(new Intent(MainActivity.this , VideoSelectActivity.class));
-                break;
-            case R.id.audio_activity:
-                startActivity(new Intent(MainActivity.this , AudioEditorActivity.class));
                 break;
         }
     }
