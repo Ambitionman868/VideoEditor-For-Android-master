@@ -6,10 +6,15 @@ import android.graphics.Point;
 import android.hardware.Camera;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
+import android.support.v4.view.PagerAdapter;
+import android.support.v4.view.ViewPager;
 import android.util.Log;
+import android.view.LayoutInflater;
 import android.view.MotionEvent;
 import android.view.View;
+import android.view.ViewGroup;
 import android.widget.ImageView;
+import android.widget.TextView;
 import android.widget.Toast;
 
 import com.example.cj.videoeditor.Constants;
@@ -17,6 +22,8 @@ import com.example.cj.videoeditor.MyApplication;
 import com.example.cj.videoeditor.R;
 import com.example.cj.videoeditor.camera.SensorControler;
 import com.example.cj.videoeditor.gpufilter.SlideGpuFilterGroup;
+import com.example.cj.videoeditor.gpufilter.TestSlideGpuFilterGroup;
+import com.example.cj.videoeditor.gpufilter.helper.MagicFilterGroup;
 import com.example.cj.videoeditor.gpufilter.helper.MagicFilterType;
 import com.example.cj.videoeditor.widget.CameraView;
 import com.example.cj.videoeditor.widget.CircularProgressView;
@@ -31,7 +38,7 @@ import java.util.concurrent.Executors;
  * 主要包括 音视频录制、断点续录、对焦等功能
  */
 
-public class RecordedActivity extends BaseActivity implements View.OnClickListener, View.OnTouchListener, SensorControler.CameraFocusListener, SlideGpuFilterGroup.OnFilterChangeListener {
+public class RecordedActivity extends BaseActivity implements View.OnClickListener, View.OnTouchListener, SensorControler.CameraFocusListener, TestSlideGpuFilterGroup.OnFilterChangeListener {
 
     private CameraView mCameraView;
     private CircularProgressView mCapture;
@@ -42,13 +49,16 @@ public class RecordedActivity extends BaseActivity implements View.OnClickListen
     private boolean pausing = false;
     private boolean recordFlag = false;//是否正在录制
 
-    private int WIDTH = 720,HEIGHT = 1280;
+    private int WIDTH = 720, HEIGHT = 1280;
 
     private long timeStep = 50;//进度条刷新的时间
     long timeCount = 0;//用于记录录制时间
     private boolean autoPausing = false;
     ExecutorService executorService;
     private SensorControler mSensorControler;
+
+    private ViewPager mViewPager;
+
 
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
@@ -66,6 +76,7 @@ public class RecordedActivity extends BaseActivity implements View.OnClickListen
         mFocus = (FocusImageView) findViewById(R.id.focusImageView);
         mFilterBtn = (ImageView) findViewById(R.id.btn_camera_filter);
         mCameraChange = (ImageView) findViewById(R.id.btn_camera_switch);
+        mViewPager = (ViewPager) findViewById(R.id.view_pager);
 
 
         mCameraView.setOnTouchListener(this);
@@ -110,10 +121,55 @@ public class RecordedActivity extends BaseActivity implements View.OnClickListen
                 mCameraView.changeRatio(4);
             }
         });
+
+        mViewPager.setAdapter(new PagerAdapter() {
+            @Override
+            public int getCount() {
+                return MagicFilterGroup.GpuMagicFilterType.length;
+            }
+
+            @Override
+            public boolean isViewFromObject(View view, Object object) {
+                return object == view;
+            }
+
+            @Override
+            public void destroyItem(ViewGroup container, int position, Object object) {
+                container.removeView((View) object);
+            }
+
+            @Override
+            public Object instantiateItem(ViewGroup container, int position) {
+                View view = LayoutInflater.from(RecordedActivity.this).inflate(R.layout.item_video_select, container);
+                TextView textView = (TextView) view.findViewById(R.id.tv_title);
+                textView.setText(position + "");
+
+                return view;
+            }
+        });
+
+
+        mViewPager.addOnPageChangeListener(new ViewPager.OnPageChangeListener() {
+            @Override
+            public void onPageScrolled(int position, float positionOffset, int positionOffsetPixels) {
+
+            }
+
+            @Override
+            public void onPageSelected(int position) {
+                mCameraView.onPageChange(position);
+            }
+
+            @Override
+            public void onPageScrollStateChanged(int state) {
+
+            }
+        });
     }
+
     @Override
     public boolean onTouch(View v, MotionEvent event) {
-        mCameraView.onTouch(event);
+        //mCameraView.onTouch(event);
         if (mCameraView.getCameraId() == 1) {
             return false;
         }
@@ -132,11 +188,12 @@ public class RecordedActivity extends BaseActivity implements View.OnClickListen
         }
         return true;
     }
+
     Camera.AutoFocusCallback callback = new Camera.AutoFocusCallback() {
         @Override
         public void onAutoFocus(boolean success, Camera camera) {
             //聚焦之后根据结果修改图片
-            Log.e("hero","----onAutoFocus===="+success);
+            Log.e("hero", "----onAutoFocus====" + success);
             if (success) {
                 mFocus.onFocusSuccess();
             } else {
@@ -146,6 +203,7 @@ public class RecordedActivity extends BaseActivity implements View.OnClickListen
             }
         }
     };
+
     @Override
     public void onFocus() {
         if (mCameraView.getCameraId() == 1) {
@@ -154,6 +212,7 @@ public class RecordedActivity extends BaseActivity implements View.OnClickListen
         Point point = new Point(MyApplication.screenWidth / 2, MyApplication.screenHeight / 2);
         mCameraView.onFocus(point, callback);
     }
+
     @Override
     public void onBackPressed() {
         if (recordFlag) {
@@ -167,12 +226,13 @@ public class RecordedActivity extends BaseActivity implements View.OnClickListen
     protected void onResume() {
         super.onResume();
         mCameraView.onResume();
-        Toast.makeText(this,R.string.change_filter,Toast.LENGTH_SHORT).show();
+        Toast.makeText(this, R.string.change_filter, Toast.LENGTH_SHORT).show();
         if (recordFlag && autoPausing) {
             mCameraView.resume(true);
             autoPausing = false;
         }
     }
+
     @Override
     protected void onPause() {
         super.onPause();
@@ -194,10 +254,10 @@ public class RecordedActivity extends BaseActivity implements View.OnClickListen
         runOnUiThread(new Runnable() {
             @Override
             public void run() {
-                if (type == MagicFilterType.NONE){
-                    Toast.makeText(RecordedActivity.this,"当前没有设置滤镜--"+type,Toast.LENGTH_SHORT).show();
-                }else {
-                    Toast.makeText(RecordedActivity.this,"当前滤镜切换为--"+type,Toast.LENGTH_SHORT).show();
+                if (type == MagicFilterType.NONE) {
+                    Toast.makeText(RecordedActivity.this, "当前没有设置滤镜--" + type, Toast.LENGTH_SHORT).show();
+                } else {
+                    Toast.makeText(RecordedActivity.this, "当前滤镜切换为--" + type, Toast.LENGTH_SHORT).show();
                 }
             }
         });
@@ -206,13 +266,13 @@ public class RecordedActivity extends BaseActivity implements View.OnClickListen
 
     @Override
     public void onClick(View v) {
-        switch (v.getId()){
+        switch (v.getId()) {
             case R.id.btn_camera_switch:
                 mCameraView.switchCamera();
-                if (mCameraView.getCameraId() == 1){
+                if (mCameraView.getCameraId() == 1) {
                     //前置摄像头 使用美颜
                     mCameraView.changeBeautyLevel(3);
-                }else {
+                } else {
                     //后置摄像头不使用美颜
                     mCameraView.changeBeautyLevel(0);
                 }
@@ -247,6 +307,7 @@ public class RecordedActivity extends BaseActivity implements View.OnClickListen
                 break;
         }
     }
+
     Runnable recordRunnable = new Runnable() {
         @Override
         public void run() {
@@ -286,6 +347,7 @@ public class RecordedActivity extends BaseActivity implements View.OnClickListen
             }
         }
     };
+
     private void recordComplete(final String path) {
         runOnUiThread(new Runnable() {
             @Override
@@ -295,7 +357,6 @@ public class RecordedActivity extends BaseActivity implements View.OnClickListen
             }
         });
     }
-
 
 
 }

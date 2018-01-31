@@ -13,6 +13,7 @@ import com.example.cj.videoeditor.drawer.CameraDrawer;
 import com.example.cj.videoeditor.camera.CameraController;
 import com.example.cj.videoeditor.drawer.TestCameraDrawer;
 import com.example.cj.videoeditor.gpufilter.SlideGpuFilterGroup;
+import com.example.cj.videoeditor.gpufilter.TestSlideGpuFilterGroup;
 
 import javax.microedition.khronos.egl.EGLConfig;
 import javax.microedition.khronos.opengles.GL10;
@@ -195,7 +196,16 @@ public class CameraView extends GLSurfaceView implements GLSurfaceView.Renderer,
         });
     }
 
-    public void setOnFilterChangeListener(SlideGpuFilterGroup.OnFilterChangeListener listener) {
+    public void onPageChange(final int position) {
+        queueEvent(new Runnable() {
+            @Override
+            public void run() {
+                mCameraDrawer.onPageChange(position);
+            }
+        });
+    }
+
+    public void setOnFilterChangeListener(TestSlideGpuFilterGroup.OnFilterChangeListener listener) {
         mCameraDrawer.setOnFilterChangeListener(listener);
     }
 

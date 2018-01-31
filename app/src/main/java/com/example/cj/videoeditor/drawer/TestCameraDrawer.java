@@ -12,6 +12,7 @@ import com.example.cj.videoeditor.filter.AFilter;
 import com.example.cj.videoeditor.filter.CameraFilter;
 import com.example.cj.videoeditor.filter.NoFilter;
 import com.example.cj.videoeditor.gpufilter.SlideGpuFilterGroup;
+import com.example.cj.videoeditor.gpufilter.TestSlideGpuFilterGroup;
 import com.example.cj.videoeditor.record.video.TextureMovieEncoder;
 import com.example.cj.videoeditor.utils.EasyGlUtils;
 import com.example.cj.videoeditor.utils.MatrixUtils;
@@ -41,7 +42,7 @@ public class TestCameraDrawer implements GLSurfaceView.Renderer {
     /**
      * 多种滤镜切换
      */
-    private SlideGpuFilterGroup mSlideFilterGroup;
+    private TestSlideGpuFilterGroup mSlideFilterGroup;
 
     private SurfaceTexture mSurfaceTextrue;
     /**
@@ -76,7 +77,7 @@ public class TestCameraDrawer implements GLSurfaceView.Renderer {
         clipFilter = new NoFilter(resources);
         drawFilter = new CameraFilter(resources);
 
-        mSlideFilterGroup = new SlideGpuFilterGroup();
+        mSlideFilterGroup = new TestSlideGpuFilterGroup();
 
 
         //必须传入上下翻转的矩阵
@@ -222,13 +223,17 @@ public class TestCameraDrawer implements GLSurfaceView.Renderer {
      * 触摸事件的传递
      */
     public void onTouch(MotionEvent event) {
-        mSlideFilterGroup.onTouchEvent(event);
+        //mSlideFilterGroup.onTouchEvent(event);
+    }
+
+    public void onPageChange(int position) {
+        mSlideFilterGroup.onPageChange(position);
     }
 
     /**
      * 滤镜切换的事件监听
      */
-    public void setOnFilterChangeListener(SlideGpuFilterGroup.OnFilterChangeListener listener) {
+    public void setOnFilterChangeListener(TestSlideGpuFilterGroup.OnFilterChangeListener listener) {
         mSlideFilterGroup.setOnFilterChangeListener(listener);
     }
 
